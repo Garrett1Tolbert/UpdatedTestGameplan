@@ -1,15 +1,18 @@
 package com.example.garrett.updatedtestgameplan;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity {
 
+    TextView title;
     Button LoginButton, RegisterButton;
     EditText etUsername, etPassword;
     DBHelper helper = new DBHelper(this);
@@ -21,6 +24,9 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         LoginButton = (Button) findViewById(R.id.LogInButton);
         RegisterButton = (Button) findViewById(R.id.Registerbutton);
+        title = (TextView) findViewById(R.id.title);
+        Typeface myTypeFace = Typeface.createFromAsset(getAssets(),"fonts/Lobster_1.3.otf");
+        title.setTypeface(myTypeFace);
 
     }
 
