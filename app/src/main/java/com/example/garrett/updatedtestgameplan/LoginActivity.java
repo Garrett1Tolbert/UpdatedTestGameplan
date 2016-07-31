@@ -30,12 +30,14 @@ public class LoginActivity extends AppCompatActivity {
         EditText b = (EditText)findViewById(R.id.etPassword);
         String pass = b.getText().toString();
 
-        String password = helper.searchPass(aString);
 
+        User signin = helper.searchPass(aString);
+        String password = signin.getPassword();
 
 
         if (pass.equals(password)) {
             Intent PressIntent = new Intent(LoginActivity.this,MainActivity.class);
+            PressIntent.putExtra("userId",signin.getId());
             LoginActivity.this.startActivity(PressIntent);
         }else{
             Toast passTwo = Toast.makeText(LoginActivity.this, "Username and/or password are incorrect. Try again.", Toast.LENGTH_SHORT);
