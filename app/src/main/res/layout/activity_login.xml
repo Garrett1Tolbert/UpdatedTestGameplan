@@ -12,6 +12,20 @@
     tools:context="com.example.garrett.updatedtestgameplan.LoginActivity"
     android:background="#FFFFFF">
 
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Gameplan"
+        android:id="@+id/title"
+        android:textStyle="bold"
+        android:textSize="65dp"
+        android:textColor="#163E11"
+        android:layout_marginTop="39dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center" />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,7 +33,7 @@
         android:id="@+id/etUsername"
         android:inputType="textPersonName"
         android:hint="Username"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="50dp" />
 
     <EditText
         android:layout_width="match_parent"
@@ -28,7 +42,8 @@
         android:ems="10"
         android:id="@+id/etPassword"
         android:hint="Password"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="35dp" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -47,7 +62,6 @@
         android:layout_height="wrap_content"
         android:text="Register"
         android:id="@+id/Registerbutton"
-        android:layout_gravity="center_horizontal"
         android:background="#ffffff"
         android:textColor="#163E11"
         android:textStyle="bold"
