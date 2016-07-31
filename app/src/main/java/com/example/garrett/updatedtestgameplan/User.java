@@ -1,8 +1,16 @@
 package com.example.garrett.updatedtestgameplan;
 
 public class User {
+    int id;
     String username, email, password;
 
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    public int getId() {
+        return this.id;
+    }
 
     public void setUsername(String username){
         this.username = username;
