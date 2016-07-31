@@ -15,16 +15,19 @@ import android.widget.ListView;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ArrayList<String> arrayListToDo;
+    private List<String> arrayListStrings;
+    private List<Tasks> arrayListToDo;
     private ArrayAdapter<String> arrayAdapterToDo;
     Button buttonAdd;
     EditText etToDO;
+    int userId;
     DBHelper helper = new DBHelper(this);
 
 
@@ -32,14 +35,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        userId = (int) getIntent().getExtras().get("userId");
         buttonAdd = (Button) findViewById(R.id.buttonAdd);
         etToDO = (EditText) findViewById(R.id.etToDo);
-        arrayListToDo = new ArrayList<String>();
-        arrayAdapterToDo = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayListToDo);
+        arrayListToDo = helper.getAllTasksByUser(userId);
+        arrayListStrings = new ArrayList<String>();
+        for (Tasks task : arrayListToDo) {
+            arrayListStrings.add(task.getTask());
+        }
+        arrayAdapterToDo = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayListStrings);
         ListView listViewToDo = (ListView) findViewById(R.id.listViewToDo);
         listViewToDo.setAdapter(arrayAdapterToDo);
-
         registerForContextMenu(listViewToDo);
+
 
         try {
             Log.i("ON CREATE", "The on create has occurred");
@@ -54,8 +62,26 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.i("ON CREATE", e.getMessage());
         }
-        Logger.getLogger(getClass().getName()).log(Level.WARNING, "This is a test 1");
     }
+//
+//    public class TaskAdapter extends ArrayAdapter<Tasks> {
+//        public TaskAdapter(Context context, ArrayList<Tasks> tasks) {
+//            super(context,0,tasks);
+//        }
+//
+//        @Override
+//        public View getView(int position, View convertView, ViewGroup parent) {
+//            Tasks task = getItem(position);
+//            if (convertView == null) {
+//                convertView = LayoutInflater.from(getContext()).inflate(R.layout.activity_main,parent,false);
+//            }
+//            ListView lvTask = (ListView) convertView.findViewById(R.id.listViewToDo);
+//            buttonAdd.setText(task.task);
+//
+//            return convertView;
+//        }
+//    }
+
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -69,6 +95,8 @@ public class MainActivity extends AppCompatActivity {
         for (String option : new String[]{"Delete Task", "Go back"}) {
             menu.add(option);
         }
+        Logger.getLogger(getClass().getName()).log(Level.WARNING, "THIS worked CONTEXTMENU PART 1 ");
+
     }
 
     @Override
@@ -77,9 +105,14 @@ public class MainActivity extends AppCompatActivity {
         int selectedItem = info.position;
 
         if (item.getTitle().equals("Delete Task")) {
+            arrayListStrings.remove(selectedItem);
+            Tasks taskdel = arrayListToDo.get(selectedItem);
+            helper.deleteTask(taskdel.getId());
             arrayListToDo.remove(selectedItem);
             arrayAdapterToDo.notifyDataSetChanged();
         }
+        Logger.getLogger(getClass().getName()).log(Level.WARNING, "THIS worked CONTEXTMENU PART 2 ");
+
         return true;
     }
 
@@ -88,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
             Log.i("ON BACK PRESSED", "The on back Pressed event has occurred!");
 
             PrintWriter pw = new PrintWriter(openFileOutput("ToDo.txt", Context.MODE_PRIVATE));
-            for (String ToDo : arrayListToDo) {
+            for (String ToDo : arrayListStrings) {
                 pw.println((ToDo));
             }
 
@@ -97,36 +130,37 @@ public class MainActivity extends AppCompatActivity {
             Log.i("ON BACK PRESSED", e.getMessage());
         }
 
-        Logger.getLogger(getClass().getName()).log(Level.WARNING, "This is a test 2");
     }
 
     public void buttonAddClick(View v) {
         EditText editTextTODo = (EditText) findViewById(R.id.etToDo);
-        String ToDo = editTextTODo.getText().toString().trim();
         String STRtask = etToDO.getText().toString();
+        Tasks t = new Tasks();
 
         if (!STRtask.isEmpty()) {
+            long id;
             //insert tasks into tasks table
-            Tasks t = new Tasks();
             t.setTask(STRtask);
 
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, "THIS IS A TEST3");
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "THIS worked Main Activity PART 1 ");
+            id = helper.insertTask(t);
+            t.setId((int) id);
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "THIS worked Main Activity PART 2 ");
 
-            helper.insertTask(t);
-
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, "THIS IS A TEST4");
+            //intersection method is called
+            helper.createIntersection(userId,id);
 
         } else {
             return;
         }
 
-        if (!ToDo.isEmpty()) {
-            arrayAdapterToDo.add(ToDo);
+        if (!STRtask.isEmpty()) {
+            arrayAdapterToDo.add(STRtask);
+            arrayListToDo.add(t);
             editTextTODo.setText("");
         } else {
             return;
         }
-        Logger.getLogger(getClass().getName()).log(Level.WARNING, "This is a test 5");
 
     }
 }
